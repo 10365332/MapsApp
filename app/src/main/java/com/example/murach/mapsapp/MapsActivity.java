@@ -98,17 +98,16 @@ public class MapsActivity extends FragmentActivity implements OnSeekBarChangeLis
                 .addAll(createRectangle(new LatLng(-20, 130), 5, 5))
                 .addHole(createRectangle(new LatLng(-22, 128), 1, 1))
                 .addHole(createRectangle(new LatLng(-18, 133), 0.5, 1.5))
-                .fillColor(Color.CYAN)
-                .strokeColor(Color.BLUE)
-                .strokeWidth(5));
+                .fillColor(Color.GREEN)
+                .strokeColor(Color.GRAY)
+                .strokeWidth(3));
 
         //mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
 
         // Create a rectangle centered at Sydney.
         PolygonOptions options = new PolygonOptions().addAll(createRectangle(SYDNEY, 5, 8));
 
-        int fillColor = Color.HSVToColor(
-                mAlphaBar.getProgress(), new float[] {mColorBar.getProgress(), 1, 1});
+        int fillColor = Color.HSVToColor(mAlphaBar.getProgress(), new float[] {mColorBar.getProgress(), 1, 1});
         mMutablePolygon = mMap.addPolygon(options
                 .strokeWidth(mWidthBar.getProgress())
                 .strokeColor(Color.BLACK)
@@ -153,7 +152,13 @@ public class MapsActivity extends FragmentActivity implements OnSeekBarChangeLis
                     progress, Color.red(prevColor), Color.green(prevColor),
                     Color.blue(prevColor)));
         } else if (seekBar == mWidthBar) {
-            mMutablePolygon.setStrokeWidth(progress);
+            int fillColor = Color.HSVToColor(mAlphaBar.getProgress(), new float[] {mColorBar.getProgress(), 1, 1});
+            PolygonOptions options = new PolygonOptions().addAll(createRectangle(SYDNEY, progress, 8));
+            mMap.clear();
+            mMutablePolygon = mMap.addPolygon(options
+                    .strokeWidth(mWidthBar.getProgress())
+                    .strokeColor(Color.BLACK)
+                    .fillColor(fillColor));
         }
     }
 }
