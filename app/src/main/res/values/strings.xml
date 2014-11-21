@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MapsApp</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="properties_sydney_polygon">Properties for Sydney Polygon</string>
+    <string name="fill_hue">Fill Hue</string>
+    <string name="fill_alpha">Fill Alpha</string>
+    <string name="stroke_width">Stroke Width</string>
+
+</resources>
