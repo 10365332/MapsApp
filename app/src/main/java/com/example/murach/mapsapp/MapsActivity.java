@@ -32,6 +32,7 @@ public class MapsActivity extends FragmentActivity implements OnSeekBarChangeLis
     private SeekBar mAlphaBar;
     private SeekBar mWidthBar;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +51,11 @@ public class MapsActivity extends FragmentActivity implements OnSeekBarChangeLis
         mWidthBar.setProgress(10);
 
         setUpMapIfNeeded();
+
+        String forecastDaysNum = "3";
+        String city = "London, UK";
+        String lang = "en";
+        String data = ( (new WeatherHttpClient()).getForecastWeatherData(new String[]{city,lang, forecastDaysNum}));
     }
 
     @Override
