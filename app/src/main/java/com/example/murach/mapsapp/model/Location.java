@@ -1,9 +1,11 @@
 package com.example.murach.mapsapp.model;
 
+import java.io.Serializable;
+
 /**
  * Created by 10365332 on 12/12/2014.
  */
-public class Location {
+public class Location implements Serializable {
 
 
     private float longitude;
