@@ -1,11 +1,13 @@
 package com.example.murach.mapsapp;
 
+import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.graphics.Color;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
+import com.google.android.gms.gcm.Task;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -55,13 +57,18 @@ public class MapsActivity extends FragmentActivity implements OnSeekBarChangeLis
         String forecastDaysNum = "3";
         String city = "London, UK";
         String lang = "en";
-        String data = ( (new WeatherHttpClient()).getForecastWeatherData(new String[]{city,lang, forecastDaysNum}));
+
+        JSONWeatherTask task = new JSONWeatherTask();
+        task.execute(new String[]{city,lang, forecastDaysNum});
+        //Ophalen van de Weatherdata
+        //String data = ( (new WeatherHttpClient()).getForecastWeatherData(new String[]{city,lang, forecastDaysNum}));
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+        getWeatherData();
     }
 
     /**
@@ -90,6 +97,26 @@ public class MapsActivity extends FragmentActivity implements OnSeekBarChangeLis
                 setUpMap();
             }
         }
+    }
+    /**
+     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
+     * just add a marker near Africa.
+     * <p/>
+     * This should only be called once and when we are sure that {@link #mMap} is not null.
+     */
+
+    private class JSONWeatherTask extends AsyncTask<String, Void, Object>{
+
+        @Override
+        protected Object doInBackground(String... params) {
+            String data = ( (new WeatherHttpClient()).getForecastWeatherData(params[0], params[1], params[2]));
+            return null;
+        }
+    }
+
+    private void getWeatherData() {
+        //Code to parse the weatherdata to an ideal format
+        //Show the weatherdata on the map
     }
 
     /**
