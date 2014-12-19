@@ -29,7 +29,34 @@ public class WeatherJsonParser {
 
         weather.location = location;
 
+        JSONArray jWeatherArr = jWeatherObj.getJSONArray("weather");
+
+        JSONObject WeatherObj = jWeatherArr.getJSONObject(0);
+        weather.currentCondition.setWeatherId(getInt("id", WeatherObj));
+        weather.currentCondition.setDescr(getString("description", WeatherObj));
+        weather.currentCondition.setCondition(getString("main", WeatherObj));
+        weather.currentCondition.setIcon(getString("icon", WeatherObj));
+
+        JSONObject mainObj = getObject("main", jWeatherObj);
+        weather.currentCondition.setHumidity(getInt("humidity", mainObj));
+        weather.currentCondition.setPressure(getInt("pressure", mainObj));
+        weather.temperature.setMaxTemp(getFloat("temp_max", mainObj));
+        weather.temperature.setMinTemp(getFloat("temp_min", mainObj));
+        weather.temperature.setTemp(getFloat("temp", mainObj));
+
+
+        JSONObject windObj = getObject("wind", jWeatherObj);
+        weather.wind.setSpeed(getFloat("speed", windObj));
+        weather.wind.setDeg(getFloat("deg", windObj));
+
+
+        JSONObject cloudsObj = getObject("clouds", jWeatherObj);
+        weather.clouds.setPerc(getInt("all", cloudsObj));
+
+
+
         return weather;
+
     }
 
     private static JSONObject getObject(String tagName, JSONObject jObj)  throws JSONException {
