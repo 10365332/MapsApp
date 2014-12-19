@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
+import com.example.murach.mapsapp.model.Weather;
 import com.google.android.gms.gcm.Task;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -15,6 +16,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.List;
@@ -55,11 +60,11 @@ public class MapsActivity extends FragmentActivity implements OnSeekBarChangeLis
         setUpMapIfNeeded();
 
         String forecastDaysNum = "3";
-        String city = "London, UK";
+        String city = "Brussel, BE";
         String lang = "en";
 
         JSONWeatherTask task = new JSONWeatherTask();
-        task.execute(new String[]{city,lang, forecastDaysNum});
+        task.execute(new String[]{city,lang});
         //Ophalen van de Weatherdata
         //String data = ( (new WeatherHttpClient()).getForecastWeatherData(new String[]{city,lang, forecastDaysNum}));
     }
@@ -68,7 +73,7 @@ public class MapsActivity extends FragmentActivity implements OnSeekBarChangeLis
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
-        getWeatherData();
+        getWeatherDataUnvalid();
     }
 
     /**
@@ -105,16 +110,25 @@ public class MapsActivity extends FragmentActivity implements OnSeekBarChangeLis
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
 
-    private class JSONWeatherTask extends AsyncTask<String, Void, Object>{
+    private class JSONWeatherTask extends AsyncTask<String, Void, Weather>{
 
         @Override
-        protected Object doInBackground(String... params) {
-            String data = ( (new WeatherHttpClient()).getForecastWeatherData(params[0], params[1], params[2]));
-            return null;
+        protected Weather doInBackground(String... params) {
+            Weather weather = new Weather();
+            String data = ( (new WeatherHttpClient()).getWeatherData(params[0], params[1]));
+            try {
+                weather = WeatherJsonParser.getWeather(data);
+                System.out.println("Weather ["+weather+"]");
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return weather;
         }
     }
 
-    private void getWeatherData() {
+    private void getWeatherDataUnvalid() {
         //Code to parse the weatherdata to an ideal format
         //Show the weatherdata on the map
     }

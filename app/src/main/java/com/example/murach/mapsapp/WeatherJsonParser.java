@@ -11,7 +11,7 @@ import org.json.JSONArray;
  * Created by 10365332 on 12/12/2014.
  */
 public class WeatherJsonParser {
-    public Weather getWeather(String data) throws JSONException {
+    public static Weather getWeather(String data) throws JSONException {
         Weather weather = new Weather();
         Location location = new Location();
 
