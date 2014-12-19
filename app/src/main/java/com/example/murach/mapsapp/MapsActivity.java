@@ -24,12 +24,15 @@ import org.json.JSONObject;
 import java.util.Arrays;
 import java.util.List;
 
+import android.widget.TextView;
+
 public class MapsActivity extends FragmentActivity implements OnSeekBarChangeListener  {
 
     private static final LatLng SYDNEY = new LatLng(-33.87365, 151.20689);
     private static final int WIDTH_MAX = 50;
     private static final int HUE_MAX = 360;
     private static final int ALPHA_MAX = 255;
+    private static LatLng HOME;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
@@ -39,6 +42,8 @@ public class MapsActivity extends FragmentActivity implements OnSeekBarChangeLis
     private SeekBar mAlphaBar;
     private SeekBar mWidthBar;
 
+    private TextView temp;
+    private TextView cityText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +62,13 @@ public class MapsActivity extends FragmentActivity implements OnSeekBarChangeLis
         mWidthBar.setMax(WIDTH_MAX);
         mWidthBar.setProgress(10);
 
+        cityText = (TextView) findViewById(R.id.cityText);
+        temp = (TextView) findViewById(R.id.temp);
+
         setUpMapIfNeeded();
 
         String forecastDaysNum = "3";
-        String city = "Brussel, BE";
+        String city = "Diepenbeek, BE";
         String lang = "en";
 
         JSONWeatherTask task = new JSONWeatherTask();
@@ -126,6 +134,14 @@ public class MapsActivity extends FragmentActivity implements OnSeekBarChangeLis
             }
             return weather;
         }
+        @Override
+        protected void onPostExecute(Weather weather) {
+            super.onPostExecute(weather);
+
+            cityText.setText(weather.location.getCity() + "," + weather.location.getCountry());
+            temp.setText("" + Math.round((weather.temperature.getTemp() - 275.15)));
+            HOME = new LatLng(weather.location.getLatitude(), weather.location.getLongitude());
+        }
     }
 
     private void getWeatherDataUnvalid() {
@@ -165,7 +181,7 @@ public class MapsActivity extends FragmentActivity implements OnSeekBarChangeLis
         mWidthBar.setOnSeekBarChangeListener(this);
 
         // Move the map so that it is centered on the mutable polygon.
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(SYDNEY));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(HOME));
     }
 
     private List<LatLng> createRectangle(LatLng center, double halfWidth, double halfHeight) {
@@ -200,7 +216,7 @@ public class MapsActivity extends FragmentActivity implements OnSeekBarChangeLis
                     Color.blue(prevColor)));
         } else if (seekBar == mWidthBar) {
             int fillColor = Color.HSVToColor(mAlphaBar.getProgress(), new float[] {mColorBar.getProgress(), 1, 1});
-            PolygonOptions options = new PolygonOptions().addAll(createRectangle(SYDNEY, progress, 8));
+            PolygonOptions options = new PolygonOptions().addAll(createRectangle(HOME, progress, 8));
             mMap.clear();
             mMutablePolygon = mMap.addPolygon(options
                     .strokeWidth(mWidthBar.getProgress())
